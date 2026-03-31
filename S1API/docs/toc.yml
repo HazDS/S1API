@@ -17,6 +17,8 @@
       href: scheduling-system.md
     - name: Seating Registry
       href: seating-registry.md
+    - name: Swapping Schedules at Runtime
+      href: npc-schedule-swap.md
     - name: Building Registry
       href: building-registry.md
     - name: Delivery Location Registry

@@ -471,10 +471,9 @@ Enable the schedule system in `OnCreated`:
 protected override void OnCreated()
 {
     base.OnCreated();
-    
+
     // Enable schedule system
     Schedule.Enable();
-    Schedule.InitializeActions();
 }
 ```
 
@@ -492,6 +491,23 @@ Schedule.Disable();
 // Enable curfew mode
 Schedule.SetCurfewMode(true);
 ```
+
+### Swapping Schedules at Runtime
+
+Use `Schedule.ApplyActions()` to replace the NPC's entire schedule at runtime (e.g., after a quest completes). All action types must have been pre-allocated in `ConfigurePrefab`.
+
+```csharp
+Schedule.ApplyActions(new IScheduleActionSpec[]
+{
+    new WalkToSpec { Destination = homePos, StartTime = 800 },
+    new StayInBuildingSpec { BuildingName = "North apartments", StartTime = 900, DurationMinutes = 480 },
+    new SitSpec { SeatSetName = "Outdoor Bench", StartTime = 1730, DurationMinutes = 120 }
+});
+```
+
+This clears existing actions, applies the new specs, rebuilds the action list, and enforces the correct state for the current game time — all in one call.
+
+For a full walkthrough with save/load persistence, see **[Swapping Schedules at Runtime](npc-schedule-swap.md)**.
 
 ### Schedule Events
 

@@ -230,6 +230,37 @@ namespace S1API.Entities
 
 
         /// <summary>
+        /// Replaces all current schedule actions with the provided action specs.
+        /// This is the primary method for changing an NPC's schedule at runtime (e.g., after a quest completes).
+        /// </summary>
+        /// <param name="specs">The action specifications to apply. All action types must have been
+        /// pre-allocated in <see cref="NPC.ConfigurePrefab"/> — the system reuses existing components
+        /// and cannot create new ones at runtime.</param>
+        /// <remarks>
+        /// This method clears all existing actions, applies each spec, rebuilds the action list,
+        /// and enforces the current time state. It is safe to call at any point after the NPC has spawned.
+        ///
+        /// <example>
+        /// <code>
+        /// Schedule.ApplyActions(new IScheduleActionSpec[]
+        /// {
+        ///     new WalkToSpec { Destination = homePos, StartTime = 800 },
+        ///     new StayInBuildingSpec { BuildingName = "North apartments", StartTime = 900, DurationMinutes = 480 },
+        ///     new SitSpec { SeatSetName = "Outdoor Bench", StartTime = 1730, DurationMinutes = 120 }
+        /// });
+        /// </code>
+        /// </example>
+        /// </remarks>
+        public void ApplyActions(IEnumerable<IScheduleActionSpec> specs)
+        {
+            ClearActions();
+            foreach (var spec in specs)
+                AddActionFromSpec(spec);
+            InitializeActions();
+            EnforceState();
+        }
+
+        /// <summary>
         /// Removes all actions under the schedule manager with optional filtering by action type.
         /// </summary>
         /// <param name="includeSignals">Whether to remove signal-type actions (e.g., WalkTo, DriveToCarPark). Default is <c>true</c>.</param>
